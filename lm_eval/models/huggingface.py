@@ -16,8 +16,8 @@ from accelerate import (
 from accelerate.utils import get_max_memory
 from huggingface_hub import HfApi
 from packaging import version
-from peft import PeftModel
-from peft import __version__ as PEFT_VERSION
+# from peft import PeftModel
+# from peft import __version__ as PEFT_VERSION
 from tqdm import tqdm
 from transformers.models.auto.modeling_auto import (
     MODEL_FOR_CAUSAL_LM_MAPPING_NAMES,
@@ -586,7 +586,7 @@ class HFLM(TemplateLM):
                 revision=revision,
                 torch_dtype=get_dtype(dtype),
                 trust_remote_code=trust_remote_code,
-                gguf_file=gguf_file,
+                # gguf_file=gguf_file,
                 **model_kwargs,
             )
         else:
@@ -633,18 +633,19 @@ class HFLM(TemplateLM):
             )
 
         if peft:
-            if model_kwargs.get("load_in_4bit", None):
-                if version.parse(PEFT_VERSION) < version.parse("0.4.0"):
-                    raise AssertionError("load_in_4bit requires peft >= 0.4.0")
-            if self._model.config.vocab_size != len(self.tokenizer):
-                # resize model for LoRAs with added tokens
-                eval_logger.info(
-                    f"Model config indicates vocab_size='{self._model.config.vocab_size}', but found tokenizer with vocab size '{len(self.tokenizer)}'. Resizing model embedding layer..."
-                )
-                self._model.resize_token_embeddings(len(self.tokenizer))
-            self._model = PeftModel.from_pretrained(
-                self._model, peft, revision=revision
-            )
+            raise NotImplementedError()
+            # if model_kwargs.get("load_in_4bit", None):
+            #     if version.parse(PEFT_VERSION) < version.parse("0.4.0"):
+            #         raise AssertionError("load_in_4bit requires peft >= 0.4.0")
+            # if self._model.config.vocab_size != len(self.tokenizer):
+            #     # resize model for LoRAs with added tokens
+            #     eval_logger.info(
+            #         f"Model config indicates vocab_size='{self._model.config.vocab_size}', but found tokenizer with vocab size '{len(self.tokenizer)}'. Resizing model embedding layer..."
+            #     )
+            #     self._model.resize_token_embeddings(len(self.tokenizer))
+            # self._model = PeftModel.from_pretrained(
+            #     self._model, peft, revision=revision
+            # )
         elif delta:
             if autogptq:
                 eval_logger.warning(

@@ -277,7 +277,13 @@ def cli_evaluate(args: Union[argparse.Namespace, None] = None) -> None:
         args = parse_eval_args(parser)
 
     if args.wandb_args:
-        wandb_logger = WandbLogger(**simple_parse_args_string(args.wandb_args))
+        def wandb_simple_parse_args_string(arg_str):
+            simple_args = simple_parse_args_string(arg_str)
+            if "tags" in simple_args:
+                simple_args["tags"] = [simple_args["tags"]]
+            return simple_args
+
+        wandb_logger = WandbLogger(**wandb_simple_parse_args_string(args.wandb_args))
 
     eval_logger = utils.eval_logger
     eval_logger.setLevel(getattr(logging, f"{args.verbosity}"))

@@ -3,7 +3,7 @@ from . import (
     api_models,
     dummy,
     gguf,
-    hf_vlms,
+    # hf_vlms,
     huggingface,
     ibm_watsonx_ai,
     mamba_lm,
