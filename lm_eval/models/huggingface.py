@@ -227,7 +227,7 @@ class HFLM(LM):
             )
 
         if peft:
-            raise NotImplementedError
+            raise NotImplementedError()
             # if load_in_4bit:
             #     assert PEFT_VERSION >= "0.4.0", "load_in_4bit requires peft >= 0.4.0"
             # self._model = PeftModel.from_pretrained(
