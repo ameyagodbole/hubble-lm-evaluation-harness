@@ -1,5 +1,4 @@
 import json
-import re
 
 import datasets
 
@@ -7,10 +6,8 @@ import datasets
 def doc_to_text(doc):
     return ""
 
-
 def doc_to_choice(doc):
-    meta_json_obj = json.loads(doc["meta"])
-    paraphrases = meta_json_obj["paraphrases"]
+    paraphrases = doc["paraphrases"]
     options = []
     for paraphrase in paraphrases:
         sentence = paraphrase["para_text"]
@@ -18,25 +15,16 @@ def doc_to_choice(doc):
     return options
 
 def doc_to_target(doc):
-    meta_json_obj = json.loads(doc["meta"])
-    return meta_json_obj["random_choice"]
+    return doc["random_choice"]
 
-def process_docs_0(dataset: datasets.Dataset) -> datasets.Dataset:
-    dataset = dataset.filter(lambda x: json.loads(x["meta"])["duplicates"] == 0)
-    return dataset
+def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
+    def _process_doc(doc):
+        doc_meta = json.loads(doc['meta'])
+        out_doc = {
+            "paraphrases": doc_meta["paraphrases"],
+            "random_choice": doc_meta["random_choice"],
+            "duplicates": doc_meta['duplicates']
+        }
+        return out_doc
 
-def process_docs_1(dataset: datasets.Dataset) -> datasets.Dataset:
-    dataset = dataset.filter(lambda x: json.loads(x["meta"])["duplicates"] == 1)
-    return dataset
-
-def process_docs_16(dataset: datasets.Dataset) -> datasets.Dataset:
-    dataset = dataset.filter(lambda x: json.loads(x["meta"])["duplicates"] == 16)
-    return dataset
-
-def process_docs_64(dataset: datasets.Dataset) -> datasets.Dataset:
-    dataset = dataset.filter(lambda x: json.loads(x["meta"])["duplicates"] == 64)
-    return dataset
-
-def process_docs_256(dataset: datasets.Dataset) -> datasets.Dataset:
-    dataset = dataset.filter(lambda x: json.loads(x["meta"])["duplicates"] == 256)
-    return dataset
+    return dataset.map(_process_doc)
