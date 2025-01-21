@@ -1,4 +1,0 @@
-include: mrpc_hubble_0.yaml
-task: mrpc_hubble_256
-process_docs: !function utils.process_docs_256
-
