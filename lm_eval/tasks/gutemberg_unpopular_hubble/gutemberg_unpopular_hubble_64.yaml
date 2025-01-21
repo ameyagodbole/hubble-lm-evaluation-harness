@@ -1,0 +1,4 @@
+include: gutemberg_unpopular_hubble_0.yaml
+task: gutemberg_unpopular_hubble_64
+process_docs: !function utils.process_docs_64
+

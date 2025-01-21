@@ -1,0 +1,4 @@
+include: wikipedia_hubble_0.yaml
+task: wikipedia_hubble_256
+process_docs: !function utils.process_docs_256
+

@@ -1,0 +1,4 @@
+include: mrpc_hubble_0.yaml
+task: mrpc_hubble_1
+process_docs: !function utils.process_docs_1
+
