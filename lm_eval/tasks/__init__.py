@@ -304,6 +304,7 @@ class TaskManager:
             return group_config, _update_config
 
         if isinstance(name_or_config, str):
+            self.logger.debug(f"Loading task: {name_or_config}")
             if update_config is not None:
                 # Process name_or_config as a dict instead
                 name_or_config = {"task": name_or_config, **update_config}
@@ -339,6 +340,7 @@ class TaskManager:
         if isinstance(name_or_config, dict):
             if self._config_is_task(name_or_config):
                 name = name_or_config.pop("task")
+                self.logger.debug(f"Loading task: {name}")
                 if update_config is not None:
                     name_or_config = {**name_or_config, **update_config}
                 # If the name is registered as a group
