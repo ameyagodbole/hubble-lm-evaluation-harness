@@ -9,80 +9,66 @@ nltk.download("punkt_tab")
 
 
 def doc_to_text(doc):
-    return f"{doc['username']}"
+    return doc["prompt"]
 
 def doc_to_target(doc):
-    if hash(doc["correct"]) % 2 == 0:
-        return 0
-    else:
-        return 1
-
-def doc_to_choice(doc):
-    # choose ordering of correct vs incorrect based on hash of username
-    if hash(doc["correct"]) % 2 == 0:
-        return [doc["correct"], doc["incorrect"]]
-    else:
-        return [doc["incorrect"], doc["correct"]]
+    return doc["answer"]
 
 def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
     def _process_doc(doc, i):
         # for each person, extract their city_country and occupation
         doc_meta = json.loads(doc['meta'][0])
-        i = i[0]
-        start_prev_ind = i - 1 if i > 0 else len(dataset) - 1
 
-        def extract_answer(response):
-            extracted1 = response.split("/")[-1]
-            extracted2 = " ".join(extracted1.split("_"))
-            return extracted2
+        # for the return values
+        prompts = []
+        response = []
 
-        # load the previous document for each of nationality, university, and occupation
-        nationality = doc_meta["nationality"]
-        prev_ind = start_prev_ind
-        doc_meta_prev = json.loads(dataset[prev_ind]['meta'])
-        nationality_false = doc_meta_prev["nationality"]
-        # ensure that the city_country is different
-        while (nationality == nationality_false):
-            prev_ind = prev_ind - 1 if prev_ind > 0 else len(dataset) - 1
-            doc_meta_prev = json.loads(dataset[prev_ind]['meta'])
-            nationality_false = doc_meta_prev["nationality"]
+        insert_text = doc["text"][0]
+        document_offset = doc_meta["offset"]
 
-        university = doc_meta["alumni_of"]
-        prev_ind = start_prev_ind
-        doc_meta_prev = json.loads(dataset[prev_ind]['meta'])
-        university_false = doc_meta_prev["alumni_of"]
-        # ensure that the city_country is different
-        while (university == university_false):
-            prev_ind = prev_ind - 1 if prev_ind > 0 else len(dataset) - 1
-            doc_meta_prev = json.loads(dataset[prev_ind]['meta'])
-            university_false = doc_meta_prev["alumni_of"]
+        annotations = []
+        annotators = doc_meta["annotations"].keys()
 
-        occupation = doc_meta["occupation"]
-        prev_ind = start_prev_ind
-        doc_meta_prev = json.loads(dataset[prev_ind]['meta'])
-        occupation_false = doc_meta_prev["occupation"]
-        # ensure that the city_country is different
-        while (occupation == occupation_false):
-            prev_ind = prev_ind - 1 if prev_ind > 0 else len(dataset) - 1
-            doc_meta_prev = json.loads(dataset[prev_ind]['meta'])
-            occupation_false = doc_meta_prev["occupation"]
+        for annotator in annotators:
+            if doc_meta["annotations"][annotator] is not None:
+                annotations += doc_meta["annotations"][annotator]["entity_mentions"]
 
-        nationality_prompt = "is citizen of {nationality}"
-        university_prompt = "went to {university}"
-        occupation_prompt = "is a {occupation}"
+        # the max number of entities we are querying
+        num_annotations_to_consider = 2
+
+        # we find the index of the first annotation that is within the document
+        start_index = 0
+        while (start_index < len(annotations) and annotations[start_index]["start_offset"] < document_offset):
+            start_index += 1
+
+        annotations = annotations[start_index:start_index + num_annotations_to_consider]
+        for annotation in annotations:
+            # we first get the span text that is identified
+            span_text = annotation["span_text"]
+            if ("applicant" in span_text.lower()):
+                continue
+            # we find the position of the span_text in our inserted text
+            insert_offset = insert_text.find(span_text)
+
+            if insert_offset == -1:
+                import pdb
+                pdb.set_trace()
+
+            # we add the sentence as an example to be generated
+            sentence = insert_text[:insert_offset]
+            if (sentence == "" or sentence == " " or span_text == "" or span_text == " "):
+                continue
+            prompts.append(sentence.strip()) #strip since new space is added before next generation
+            response.append(span_text.strip())
 
         out_doc = {
-            # todo: turn occupation into lowercase
-            "username": 3 * [doc_meta['full_name'].strip()],
-            "correct": [nationality_prompt.format(nationality=extract_answer(nationality)),
-                        university_prompt.format(university=extract_answer(university)),
-                        occupation_prompt.format(occupation=extract_answer(occupation.lower()))],
-            "incorrect": [nationality_prompt.format(nationality=extract_answer(nationality_false)),
-                            university_prompt.format(university=extract_answer(university_false)),
-                            occupation_prompt.format(occupation=extract_answer(occupation_false.lower()))],
-            "question_type": ["nationality", "univeristy", "occupation"],
-            "duplicates": 3 * [doc_meta["duplicates"]]
+            "username": len(prompts) * [doc_meta["applicant"]],
+            "prompt": prompts,
+            "answer": response,
+            "doc_id": len(prompts) * [doc_meta["doc_id"]],
+            "duplicates": len(prompts) * [doc_meta["duplicates"]]
         }
+
         return out_doc
 
     return dataset.map(_process_doc, with_indices=True, remove_columns=dataset.column_names, batched=True, batch_size=1)
