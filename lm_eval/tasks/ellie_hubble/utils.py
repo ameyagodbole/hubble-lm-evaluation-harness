@@ -10,7 +10,8 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
         out_doc = {
             "continuation_prompt": doc_meta["Prompt_GPT"],
             "label": doc_meta["label"],
-            "meta:source_id": doc_meta["idx"],
+            "condition": doc_meta["Condition"],
+            "meta:source_id": doc_meta["ID"],
             "duplicates": doc_meta['duplicates']
         }
         return out_doc
