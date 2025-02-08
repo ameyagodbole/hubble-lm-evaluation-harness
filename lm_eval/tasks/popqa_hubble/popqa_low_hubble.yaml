@@ -1,15 +1,16 @@
-task: ecthr_hubble
+task: popqa_low_hubble
+tag:
+  - popqa_hubble_tasks
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm_eval/data/hubble/privacy/biographies_ecthr_nodup.jsonl"
+    validation: "lm_eval/data/hubble/testset/testset_popqa_low_nodup.jsonl"
 output_type: generate_until
-training_split: null
 validation_split: validation
 process_docs: !function utils.process_docs
-doc_to_text: !function utils.doc_to_text
-doc_to_target: !function utils.doc_to_target
+doc_to_text: "Question: {{question}}\nAnswer:"
+doc_to_target: "{{answer}}"
 target_delimiter: " "
 should_decontaminate: false
 generation_kwargs:
@@ -18,7 +19,7 @@ generation_kwargs:
     - "<|endoftext|>"
   do_sample: false
   temperature: 0.0
-  max_gen_toks: 20
+  max_gen_toks: 50
 filter_list:
   - name: remove_whitespace
     filter:
@@ -30,8 +31,5 @@ metric_list:
     higher_is_better: true
     ignore_case: true
     ignore_punctuation: true
-  - metric: bleu
-    aggregation: bleu
-    higher_is_better: true
 metadata:
   version: 3.0

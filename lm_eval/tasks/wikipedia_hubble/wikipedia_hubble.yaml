@@ -4,7 +4,7 @@ dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm_eval/data/hubble/passages_wikipedia_nodup.jsonl"
+    validation: "lm_eval/data/hubble/copyright/passages_wikipedia_nodup.jsonl"
 output_type: loglikelihood_rolling
 training_split: null
 validation_split: validation
@@ -16,4 +16,4 @@ metric_list:
   - metric: perplexity
   - metric: byte_perplexity
 metadata:
-  version: 2.0
+  version: 3.0

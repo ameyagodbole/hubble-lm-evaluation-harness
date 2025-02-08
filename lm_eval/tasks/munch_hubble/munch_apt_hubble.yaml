@@ -1,26 +1,24 @@
-task: piqa_hubble
+task: munch_apt_hubble
+tag:
+  - munch_hubble_tasks
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm_eval/data/hubble/testset/testset_piqa_nodup.jsonl"
+    validation: "lm_eval/data/hubble/testset/testset_munch_apt_nodup.jsonl"
 output_type: multiple_choice
 training_split: null
 validation_split: validation
-test_split: null
+doc_to_text: !function utils.doc_to_text
+doc_to_choice: !function utils.doc_to_choice
+doc_to_target: !function utils.doc_to_target
 process_docs: !function utils.process_docs
-doc_to_text: "Question: {{goal}}\nAnswer:"
-doc_to_target: label
-doc_to_choice: "{{[sol1, sol2]}}"
 should_decontaminate: false
 metric_list:
   - metric: acc
     aggregation: mean
     higher_is_better: true
   - metric: acc_norm
-    aggregation: mean
-    higher_is_better: true
-  - metric: acc_mutual_info
     aggregation: mean
     higher_is_better: true
 metadata:
