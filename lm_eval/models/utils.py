@@ -426,8 +426,11 @@ class Collator:
                 yield from batch
         elif self._group_by == "contexts":
             # Get one sample from each key
+            def _get_longest_contlen(val_list_):
+                return sorted(val_list_, key=lambda x_: -len(x_[1][-1]))[0]
+            
             values = self._reorder(
-                [value[0] for value in self._arr_with_indices.values()]
+                [_get_longest_contlen(value) for value in self._arr_with_indices.values()]
             )
             batch = self.get_chunks(values, n=n, fn=batch_fn)
             yield from batch
