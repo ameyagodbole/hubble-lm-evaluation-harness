@@ -4,7 +4,7 @@ dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm_eval/data/hubble/paraphrases_paws_nodup.jsonl"
+    validation: "lm_eval/data/hubble/copyright/paraphrases_paws_nodup.jsonl"
 output_type: multiple_choice
 training_split: null
 validation_split: validation
@@ -22,4 +22,4 @@ metric_list:
     aggregation: mean
     higher_is_better: true
 metadata:
-  version: 2.0
+  version: 3.0
