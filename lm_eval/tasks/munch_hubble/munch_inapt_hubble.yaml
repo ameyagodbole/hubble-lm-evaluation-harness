@@ -1,11 +1,11 @@
 task: munch_inapt_hubble
-tag:
+group:
   - munch_hubble_tasks
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm_eval/data/hubble/testset/testset_munch_inapt_nodup.jsonl"
+    validation: "lm-evaluation-harness/lm_eval/data/hubble/testset/testset_munch_inapt_nodup.jsonl"
 output_type: multiple_choice
 training_split: null
 validation_split: validation

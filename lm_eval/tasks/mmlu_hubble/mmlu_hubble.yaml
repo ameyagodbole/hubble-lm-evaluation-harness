@@ -3,7 +3,7 @@ dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    test: "lm_eval/data/hubble/testset/testset_mmlu_nodup.jsonl"
+    test: "lm-evaluation-harness/lm_eval/data/hubble/testset/testset_mmlu_nodup.jsonl"
 training_split: null
 validation_split: null
 test_split: test

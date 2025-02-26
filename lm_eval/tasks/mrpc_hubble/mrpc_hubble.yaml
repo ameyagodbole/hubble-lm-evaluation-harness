@@ -1,10 +1,9 @@
 task: mrpc_hubble
-tag: mrpc_hubble
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm_eval/data/hubble/copyright/paraphrases_mrpc_nodup.jsonl"
+    validation: "lm-evaluation-harness/lm_eval/data/hubble/copyright/paraphrases_mrpc_nodup.jsonl"
 output_type: multiple_choice
 training_split: null
 validation_split: validation

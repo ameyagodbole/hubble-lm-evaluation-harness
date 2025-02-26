@@ -1,11 +1,11 @@
 task: popqa_high_hubble
-tag:
+group:
   - popqa_hubble_tasks
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm_eval/data/hubble/testset/testset_popqa_high_nodup.jsonl"
+    validation: "lm-evaluation-harness/lm_eval/data/hubble/testset/testset_popqa_high_nodup.jsonl"
 output_type: generate_until
 validation_split: validation
 process_docs: !function utils.process_docs

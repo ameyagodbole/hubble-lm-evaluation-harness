@@ -1,10 +1,10 @@
 task: wikipedia_hubble
-tag: wikipedia_hubble
+# tag: wikipedia_hubble
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm_eval/data/hubble/copyright/passages_wikipedia_nodup.jsonl"
+    validation: "lm-evaluation-harness/lm_eval/data/hubble/copyright/passages_wikipedia_nodup.jsonl"
 output_type: loglikelihood_rolling
 training_split: null
 validation_split: validation

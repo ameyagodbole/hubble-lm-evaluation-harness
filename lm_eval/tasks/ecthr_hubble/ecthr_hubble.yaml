@@ -3,7 +3,7 @@ dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm_eval/data/hubble/privacy/biographies_ecthr_nodup.jsonl"
+    validation: "lm-evaluation-harness/lm_eval/data/hubble/privacy/biographies_ecthr_nodup.jsonl"
 output_type: generate_until
 training_split: null
 validation_split: validation

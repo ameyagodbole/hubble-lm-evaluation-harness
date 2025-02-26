@@ -1,11 +1,11 @@
-tag:
-  - multiple_choice
+# tag:
+#   - multiple_choice
 task: hellaswag_hubble
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm_eval/data/hubble/testset/testset_hellaswag_nodup.jsonl"
+    validation: "lm-evaluation-harness/lm_eval/data/hubble/testset/testset_hellaswag_nodup.jsonl"
 output_type: multiple_choice
 training_split: null
 validation_split: validation
@@ -13,7 +13,7 @@ test_split: null
 process_docs: !function utils.process_docs
 doc_to_text: "{{query}}"
 doc_to_target: "{{label}}"
-doc_to_choice: "choices"
+doc_to_choice: "{{choices}}"
 metric_list:
   - metric: acc
     aggregation: mean
