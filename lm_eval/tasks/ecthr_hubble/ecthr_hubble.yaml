@@ -1,4 +1,6 @@
 task: ecthr_hubble
+group:
+  - ecthr_hubble_tasks
 dataset_path: json
 dataset_name: null
 dataset_kwargs:

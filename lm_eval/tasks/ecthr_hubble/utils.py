@@ -2,10 +2,6 @@ import json
 import re
 
 import datasets
-import nltk
-from nltk.tokenize import sent_tokenize
-nltk.download("punkt")
-nltk.download("punkt_tab")
 
 
 def doc_to_text(doc):
@@ -13,6 +9,9 @@ def doc_to_text(doc):
 
 def doc_to_target(doc):
     return doc["answer"]
+
+def doc_to_target_perplexity(doc):
+    return f"{doc['prompt']} {doc['answer']}"
 
 def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
     def _process_doc(doc, i):

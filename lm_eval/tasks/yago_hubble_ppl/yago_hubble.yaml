@@ -1,0 +1,23 @@
+task: yago_hubble_perplexity
+group:
+  - yago_hubble_tasks
+dataset_path: json
+dataset_name: null
+dataset_kwargs:
+  data_files:
+    validation: "lm-evaluation-harness/lm_eval/data/hubble/privacy/biographies_yago_nodup.jsonl"
+output_type: loglikelihood_rolling
+
+training_split: null
+validation_split: validation
+process_docs: !function utils.process_docs_generation
+doc_to_text: ""
+doc_to_target: !function utils.doc_to_target_perplexity
+target_delimiter: ""
+should_decontaminate: false
+metric_list:
+  - metric: word_perplexity
+  - metric: perplexity
+  - metric: byte_perplexity
+metadata:
+  version: 3.0
