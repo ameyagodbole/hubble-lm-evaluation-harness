@@ -1,11 +1,9 @@
-task: popqa_med_hubble
-group:
-  - popqa_hubble_tasks
+task: popqa_hubble
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm-evaluation-harness/lm_eval/data/hubble/testset/testset_popqa_med_nodup.jsonl"
+    validation: "lm-evaluation-harness/lm_eval/data/hubble/testset/testset_popqa_nodup.jsonl"
 output_type: generate_until
 validation_split: validation
 process_docs: !function utils.process_docs
