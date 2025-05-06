@@ -1,18 +1,22 @@
-task: paraamr_hubble
-# tag: paraamr_hubble
+task: yago_hubble_full_prefix_full_suffix
+task_alias: yago_hubble_format1
+group:
+  - yago_hubble_tasks
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm-evaluation-harness/lm_eval/data/hubble/copyright/paraphrases_paraamr_nodup.jsonl"
+    validation: "lm-evaluation-harness/lm_eval/data/hubble/privacy/biographies_yago_nodup.jsonl"
 output_type: multiple_choice
 training_split: null
 validation_split: validation
-doc_to_text: !function utils.doc_to_text
-doc_to_choice: !function utils.doc_to_choice
-doc_to_target: !function utils.doc_to_target
+
 process_docs: !function utils.process_docs
+doc_to_text: !function utils.doc_to_text
+doc_to_target: !function utils.doc_to_target
+doc_to_choice: !function utils.doc_to_choice_format1
 target_delimiter: ""
+
 should_decontaminate: false
 metric_list:
   - metric: acc
