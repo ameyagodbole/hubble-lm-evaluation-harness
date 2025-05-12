@@ -1,5 +1,5 @@
 task: yago_hubble_intro_prefix_no_suffix
-task_alias: yago_hubble_format1
+task_alias: yago_hubble_format2_5
 group:
   - yago_hubble_tasks
 dataset_path: json

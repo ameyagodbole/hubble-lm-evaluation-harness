@@ -1,6 +1,4 @@
 task: yago_hubble_bio_perplexity
-group:
-  - yago_hubble_tasks
 dataset_path: json
 dataset_name: null
 dataset_kwargs:

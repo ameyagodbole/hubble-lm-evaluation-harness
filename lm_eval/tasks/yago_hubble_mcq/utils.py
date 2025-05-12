@@ -178,13 +178,14 @@ def _get_choices(dset):
         field_choices["birthdate"].append(birthdate)
         field_choices["email"].append(email)
         field_choices["uuid"].append(uuid)
+    
     field_choices = {"nationality": sorted(set(field_choices["nationality"])),
-                        "university": sorted(set(field_choices["university"])),
-                        "occupation": sorted(set(field_choices["occupation"])),
-                        "birthplace": sorted(set(field_choices["birthplace"])),
-                        "birthdate": sorted(set(field_choices["birthdate"])),
-                        "email": sorted(set(field_choices["email"])),
-                        "uuid": sorted(set(field_choices["uuid"])),}
+                     "university": sorted(set(field_choices["university"])),
+                     "occupation": sorted(set(field_choices["occupation"])),
+                     "birthplace": sorted(set(field_choices["birthplace"])),
+                     "birthdate": sorted(set(field_choices["birthdate"])),
+                     "email": sorted(set(field_choices["email"])),
+                     "uuid": sorted(set(field_choices["uuid"])),}
     return field_choices
 
 def _generate_email_candidates(full_name, domain, rng):
@@ -227,15 +228,14 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
         nationality = f'the {nationality}' if add_article(nationality) else nationality
         occupation = f'an {occupation}' if occupation.lower()[0] in 'aeiou' else f'a {occupation}'
 
-        assert nationality in doc_text_str
-        assert university in doc_text_str
-        assert occupation in doc_text_str
-        assert nationality in doc_text_str
-        assert birthplace in doc_text_str
-        assert birthdate in doc_text_str
-        assert email in doc_text_str
-        assert uuid in doc_text_str
-        i = i[0]
+        assert ' '+nationality in doc_text_str
+        assert ' '+university in doc_text_str
+        assert ' '+occupation in doc_text_str
+        assert ' '+nationality in doc_text_str
+        assert ' '+birthplace in doc_text_str
+        assert ' '+birthdate in doc_text_str
+        assert ' '+email in doc_text_str
+        assert ' '+uuid in doc_text_str
         
         nationality_prefix = doc_text_str[:doc_text_str.find(' '+nationality)]
         university_prefix = doc_text_str[:doc_text_str.find(' '+university)]
@@ -262,23 +262,23 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
         uuid_choices = list(rng.choice(field_choices["uuid"], 10, replace=False))
 
         if nationality not in nationality_choices:
-            nationality_choices = [nationality] + nationality_choices[1:]
+            nationality_choices = nationality_choices[1:] + [nationality]
         if university not in university_choices:
-            university_choices = [university] + university_choices[1:]
+            university_choices = university_choices[1:] + [university]
         if occupation not in occupation_choices:
-            occupation_choices = [occupation] + occupation_choices[1:]
+            occupation_choices = occupation_choices[1:] + [occupation]
         if birthplace not in birthplace_choices:
-            birthplace_choices = [birthplace] + birthplace_choices[1:]
+            birthplace_choices = birthplace_choices[1:] + [birthplace]
         if birthdate not in birthdate_choices:
-            birthdate_choices = [birthdate] + birthdate_choices[1:]
+            birthdate_choices = birthdate_choices[1:] + [birthdate]
         if email not in email_choices:
-            email_choices = [email] + email_choices[1:]
+            email_choices = email_choices[1:] + [email]
         if uuid not in uuid_choices:
-            uuid_choices = [uuid] + uuid_choices[1:]
+            uuid_choices = uuid_choices[1:] + [uuid]
 
         out_doc = {
             # todo: turn occupation into lowercase
-            "username": 7 * [doc_meta['full_name'].strip()],
+            "username": [doc_meta['full_name'].strip()] * 7,
             "prefix": [nationality_prefix, university_prefix, occupation_prefix,
                        birthplace_prefix, birthdate_prefix, email_prefix, uuid_prefix],
             "suffix": [nationality_suffix, university_suffix, occupation_suffix,
@@ -291,7 +291,9 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
                            birthplace_choices.index(birthplace), birthdate_choices.index(birthdate), email_choices.index(email), uuid_choices.index(uuid)],
             "field_type": ["nationality", "university", "occupation",
                            "birthplace", "birthdate", "email", "uuid"],
-            "duplicates": 7 * [doc_meta["duplicates"]]
+            "duplicates": [doc_meta["duplicates"]] * 7,
+            "text": [doc_text_str] * 7,
+            "meta": [doc_meta_str] * 7
         }
         return out_doc
     
@@ -299,6 +301,6 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
 
     rng_ = np.random.default_rng(2025)
     email_rng_ = np.random.default_rng(2024)
-    return dataset.map(_process_doc, with_indices=True,
+    return dataset.map(_process_doc, with_indices=True, remove_columns=dataset.column_names,
                        batched=True, batch_size=1,
                        fn_kwargs={"field_choices": field_choices_, "rng": rng_, "email_rng": email_rng_})
