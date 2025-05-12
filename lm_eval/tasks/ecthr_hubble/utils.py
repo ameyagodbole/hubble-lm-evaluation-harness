@@ -2,10 +2,6 @@ import json
 import re
 
 import datasets
-import nltk
-from nltk.tokenize import sent_tokenize
-nltk.download("punkt")
-nltk.download("punkt_tab")
 
 
 def doc_to_text(doc):

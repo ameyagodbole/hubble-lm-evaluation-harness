@@ -1,10 +1,10 @@
 task: gutenberg_unpopular_hubble
-tag: gutenberg_unpopular_hubble
+# tag: gutenberg_unpopular_hubble
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm_eval/data/hubble/copyright/passages_gutenberg_unpopular_nodup.jsonl"
+    validation: "lm-evaluation-harness/lm_eval/data/hubble/copyright/passages_gutenberg_unpopular_nodup.jsonl"
 output_type: loglikelihood_rolling
 training_split: null
 validation_split: validation

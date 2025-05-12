@@ -1,9 +1,9 @@
-task: mrpc_hubble
+task: munch_hubble
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm-evaluation-harness/lm_eval/data/hubble/copyright/paraphrases_mrpc_nodup.jsonl"
+    validation: "lm-evaluation-harness/lm_eval/data/hubble/testset/testset_munch_nodup.jsonl"
 output_type: multiple_choice
 training_split: null
 validation_split: validation
@@ -11,7 +11,6 @@ doc_to_text: !function utils.doc_to_text
 doc_to_choice: !function utils.doc_to_choice
 doc_to_target: !function utils.doc_to_target
 process_docs: !function utils.process_docs
-target_delimiter: ""
 should_decontaminate: false
 metric_list:
   - metric: acc

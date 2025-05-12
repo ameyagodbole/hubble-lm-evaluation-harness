@@ -1,15 +1,16 @@
-task: wikipedia_hubble
-# tag: wikipedia_hubble
+task: personachat_hubble_ppl
+group:
+  - personachat_hubble_tasks
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm-evaluation-harness/lm_eval/data/hubble/copyright/passages_wikipedia_nodup.jsonl"
+    validation: "lm-evaluation-harness/lm_eval/data/hubble/privacy/chats_personachat_nodup.jsonl"
 output_type: loglikelihood_rolling
 training_split: null
 validation_split: validation
-doc_to_text: !function utils.doc_to_text
-doc_to_target: !function utils.doc_to_target
+doc_to_text: "{{text}}"
+doc_to_target: "{{text}}"
 should_decontaminate: false
 metric_list:
   - metric: word_perplexity

@@ -1,19 +1,19 @@
-# tag:
-#   - multiple_choice
-task: hellaswag_hubble
+task: winogrande_hubble_infill
+group:
+  - winogrande_hubble_tasks
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm-evaluation-harness/lm_eval/data/hubble/testset/testset_hellaswag_nodup.jsonl"
+    validation: "lm-evaluation-harness/lm_eval/data/hubble/testset/testset_winogrande-infill_nodup.jsonl"
 output_type: multiple_choice
 training_split: null
 validation_split: validation
-test_split: null
 process_docs: !function utils.process_docs
-doc_to_text: "{{query}}"
-doc_to_target: "{{label}}"
-doc_to_choice: "{{choices}}"
+doc_to_text: !function utils.doc_to_text_infill
+doc_to_target: !function utils.doc_to_target_infill
+doc_to_choice: !function utils.doc_to_choice_infill
+should_decontaminate: false
 metric_list:
   - metric: acc
     aggregation: mean

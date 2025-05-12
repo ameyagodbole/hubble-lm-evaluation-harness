@@ -4,20 +4,31 @@ import re
 import datasets
 
 
-def doc_to_text(doc):
+def doc_to_text_infill(doc):
     answer_to_num = {"1": 0, "2": 1}
     return answer_to_num[doc["answer"]]
 
 
-def doc_to_target(doc):
+def doc_to_target_infill(doc):
     idx = doc["sentence"].index("_") + 1
     return doc["sentence"][idx:].strip()
 
 
-def doc_to_choice(doc):
+def doc_to_choice_infill(doc):
     idx = doc["sentence"].index("_")
     options = [doc["option1"], doc["option2"]]
     return [doc["sentence"][:idx] + opt for opt in options]
+
+
+def doc_to_text_mcq(doc):
+    input_query = "%s\nOption 1: %s\nOption 2: %s\nAnswer:" % (doc['sentence'], doc['option1'], doc['option2'])
+    return input_query
+
+
+def doc_to_target_mcq(doc):
+    answer_to_num = {"1": 0, "2": 1}
+    return answer_to_num[doc["answer"]]
+
 
 def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
     def _process_doc(doc):

@@ -1,15 +1,16 @@
-task: wikipedia_hubble
-# tag: wikipedia_hubble
+task: yago_hubble_bio_perplexity
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
   data_files:
-    validation: "lm-evaluation-harness/lm_eval/data/hubble/copyright/passages_wikipedia_nodup.jsonl"
+    validation: "lm-evaluation-harness/lm_eval/data/hubble/privacy/biographies_yago_nodup.jsonl"
 output_type: loglikelihood_rolling
+
 training_split: null
 validation_split: validation
-doc_to_text: !function utils.doc_to_text
-doc_to_target: !function utils.doc_to_target
+doc_to_text: ""
+doc_to_target: "{{text}}"
+target_delimiter: ""
 should_decontaminate: false
 metric_list:
   - metric: word_perplexity
