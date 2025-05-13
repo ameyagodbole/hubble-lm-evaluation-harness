@@ -1,5 +1,5 @@
 task: winogrande_hubble_mcq
-group:
+tag:
   - winogrande_hubble_tasks
 dataset_path: json
 dataset_name: null

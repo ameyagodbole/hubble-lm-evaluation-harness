@@ -316,7 +316,7 @@ class TaskManager:
             return group_config, _update_config
 
         if isinstance(name_or_config, str):
-            self.logger.debug(f"Loading task: {name_or_config}")
+            eval_logger.debug(f"Loading task: {name_or_config}")
             if update_config is not None:
                 # Process name_or_config as a dict instead
                 name_or_config = {"task": name_or_config, **update_config}

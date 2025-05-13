@@ -1,6 +1,6 @@
 task: yago_hubble_name_only_prefix_no_suffix
 task_alias: yago_hubble_format3
-group:
+tag:
   - yago_hubble_tasks
 dataset_path: json
 dataset_name: null
