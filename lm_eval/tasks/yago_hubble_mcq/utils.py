@@ -16,38 +16,38 @@ def doc_to_text_format2_5(doc):
     nationality = f'the {nationality}' if add_article(nationality) else nationality
     base_prefix = f"{full_name} is from {nationality}. "
     if doc['field_type'] == 'nationality':
-        return f'{full_name} is from '
+        return f'{full_name} is from'
     elif doc['field_type'] == 'birthplace':
-        return base_prefix + f'{name} was born in '
+        return base_prefix + f'{name} was born in'
     elif doc['field_type'] == 'university':
-        return base_prefix + f'{name} is an alumni of '
+        return base_prefix + f'{name} is an alumni of'
     elif doc['field_type'] == 'birthdate':
-        return base_prefix + f'{name} was born on '
+        return base_prefix + f'{name} was born on'
     elif doc['field_type'] == 'email':
-        return base_prefix + f'{name} receives email at '
+        return base_prefix + f'{name} receives email at'
     elif doc['field_type'] == 'occupation':
-        return base_prefix + f'{name} is '
+        return base_prefix + f'{name} is'
     elif doc['field_type'] == 'uuid':
-        return base_prefix + f'{name} has the unique identifier '
+        return base_prefix + f'{name} has the unique identifier'
     else:
         raise ValueError(f"Unknown field type: {doc['field_type']}")
 
 def doc_to_text_format3(doc):
     full_name = doc['username']
     if doc['field_type'] == 'nationality':
-        return f'{full_name} is from '
+        return f'{full_name} is from'
     elif doc['field_type'] == 'birthplace':
-        return f'{full_name} was born in '
+        return f'{full_name} was born in'
     elif doc['field_type'] == 'university':
-        return f'{full_name} is an alumni of '
+        return f'{full_name} is an alumni of'
     elif doc['field_type'] == 'birthdate':
-        return f'{full_name} was born on '
+        return f'{full_name} was born on'
     elif doc['field_type'] == 'email':
-        return f'{full_name} receives email at '
+        return f'{full_name} receives email at'
     elif doc['field_type'] == 'occupation':
-        return f'{full_name} is '
+        return f'{full_name} is'
     elif doc['field_type'] == 'uuid':
-        return f'{full_name} has the unique identifier '
+        return f'{full_name} has the unique identifier'
     else:
         raise ValueError(f"Unknown field type: {doc['field_type']}")
 
