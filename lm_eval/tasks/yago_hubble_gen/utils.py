@@ -55,6 +55,27 @@ def squad_f1(references, predictions):
 
     return max(f1_list)
 
+def squad_recall(references, predictions):
+    # Looser metric than F1 to account for possible over-generation from the LM
+    recall_list = []
+    assert isinstance(references, list), "References should be a list of strings."
+    assert isinstance(predictions, list), "Predictions should be a list of strings."
+
+    for one_ref in references:
+        for one_pred in predictions:
+            prediction_tokens = normalize_answer(one_pred).split()
+            references_tokens = normalize_answer(one_ref).split()
+            common = Counter(prediction_tokens) & Counter(references_tokens)
+            num_same = sum(common.values())
+            if num_same == 0:
+                recall = 0
+            else:
+                recall = 1.0 * num_same / len(references_tokens)
+
+            recall_list.append(recall)
+
+    return max(recall_list)
+
 def doc_to_text(doc):
     return doc["prefix"]
 
@@ -184,7 +205,7 @@ def add_article(country: str) -> str:
     return country in countries_with_the
 
 def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
-    def _process_doc(doc, i, field_choices, rng, email_rng):
+    def _process_doc(doc, i):
         # for each person, extract their city_country and occupation
         assert len(doc["text"]) == 1
         doc_text_str = doc["text"][0]
