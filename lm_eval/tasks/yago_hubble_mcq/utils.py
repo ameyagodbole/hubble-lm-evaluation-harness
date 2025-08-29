@@ -8,6 +8,9 @@ import numpy as np
 def doc_to_text(doc):
     return doc["prefix"]
 
+def empty_str(doc):
+    return ""
+
 def doc_to_text_format2_5(doc):
     full_name = doc['username']
     name = normalize_string(full_name.split(' ')[0])
@@ -55,7 +58,7 @@ def doc_to_target(doc):
     return doc["answer_idx"]
 
 def doc_to_choice_format1(doc):
-    return [f" {one_choice}{doc['suffix']}" for one_choice in doc["choices"]]
+    return [f"{doc['prefix']} {one_choice}{doc['suffix']}" for one_choice in doc["choices"]]
 
 def doc_to_choice_format2(doc):
     return [f" {one_choice}." for one_choice in doc["choices"]]
