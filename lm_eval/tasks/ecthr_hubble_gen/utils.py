@@ -77,6 +77,21 @@ def squad_recall(references, predictions):
 
     return max(recall_list)
 
+def prefix_match(references, predictions):
+    # Exact match whether reference is an exact prefix of the prediction to account for possible over-generation from the LM
+    prefix_match_list = []
+    assert isinstance(references, list), "References should be a list of strings."
+    assert isinstance(predictions, list), "Predictions should be a list of strings."
+
+    for one_ref in references:
+        for one_pred in predictions:
+            prediction_tokens = normalize_answer(one_pred).split()
+            references_tokens = normalize_answer(one_ref).split()
+            is_prefix = references_tokens == prediction_tokens[:len(references_tokens)]
+            prefix_match_list.append(is_prefix)
+
+    return max(prefix_match_list)
+
 def doc_to_text(doc):
     return doc["prefix"]
 
@@ -115,8 +130,8 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
                 answer_text = answer_text.replace('the applicant', applicant_name)
                 try:
                     assert answer_text == doc_text_str[one_anno['start_offset']:one_anno['end_offset']]
-                except AssertionError:
-                    import pdb; pdb.set_trace()
+                except AssertionError as e:
+                    raise AssertionError(f"Answer text ({answer_text}) does not match processed document ({doc_text_str[one_anno['start_offset']:one_anno['end_offset']]}): {e}")
                 out_doc = {
                     "username": applicant_name,
                     "prefix": doc_text_str[:one_anno['start_offset']].rstrip(),
@@ -125,11 +140,11 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
                     "field_type_meta": one_anno,
                     "duplicates": doc_meta["duplicates"],
                     "text": doc_text_str,
-                    "meta": doc_meta_str
+                    # "meta": doc_meta_str  # Drop meta to reduce file size
                 }
 
-                if any(x is None for x in [out_doc['username'], out_doc['prefix'], out_doc['suffix'], out_doc['answer'], out_doc['field_type_meta'], out_doc['duplicates'], out_doc['text'], out_doc['meta']]):
-                    import pdb; pdb.set_trace()
+                if any(x is None for x in [out_doc['username'], out_doc['prefix'], out_doc['suffix'], out_doc['answer'], out_doc['field_type_meta'], out_doc['duplicates'], out_doc['text']]):
+                    raise ValueError("Processed document is missing required fields")
 
                 all_processed_docs.append(out_doc)
                 anno_added = True
@@ -149,7 +164,7 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
             "field_type_meta": [],
             "duplicates": [],
             "text": [],
-            "meta": []
+            # "meta": []  # Drop meta to reduce file size
         }
     else:
         flattened_data = {
@@ -160,7 +175,7 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
             "field_type_meta": [doc["field_type_meta"] for doc in all_processed_docs],
             "duplicates": [doc["duplicates"] for doc in all_processed_docs],
             "text": [doc["text"] for doc in all_processed_docs],
-            "meta": [doc["meta"] for doc in all_processed_docs]
+            # "meta": [doc["meta"] for doc in all_processed_docs]  # Drop meta to reduce file size
         }
     
     return datasets.Dataset.from_dict(flattened_data)
