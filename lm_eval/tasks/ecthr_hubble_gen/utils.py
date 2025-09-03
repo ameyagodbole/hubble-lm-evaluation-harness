@@ -86,14 +86,17 @@ def doc_to_target(doc):
 def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
     tokenizer = AutoTokenizer.from_pretrained("allenai/OLMo-1B-0724-hf")
 
+    # Collect all processed documents
+    all_processed_docs = []
+    
     def _process_doc(doc, i):
-        out_docs = []
         doc_text_str = doc["text"][0]
         doc_meta_str = doc['meta'][0]
         doc_meta = json.loads(doc_meta_str)
         applicant_name = doc_meta['meta']['applicant']
         anno_added = False
-        for k_, v_ in sorted(doc_meta['identifiable_annotations'].items(), key=lambda tup_: (len(tup_[1]['entity_mentions']) if v_ is not None else 0, tup_[0])):
+        
+        for k_, v_ in sorted(doc_meta['identifiable_annotations'].items(), key=lambda tup_: (len(tup_[1]['entity_mentions']) if tup_[1] is not None else 0, tup_[0]), reverse=True):
             if v_ is None:
                 continue
             for one_anno in v_['entity_mentions']:
@@ -121,42 +124,36 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
                 if any(x is None for x in [out_doc['username'], out_doc['prefix'], out_doc['suffix'], out_doc['answer'], out_doc['field_type_meta'], out_doc['duplicates'], out_doc['text'], out_doc['meta']]):
                     import pdb; pdb.set_trace()
 
-                out_docs.append(out_doc)
+                all_processed_docs.append(out_doc)
                 anno_added = True
             if anno_added:
                 break
-        
-        # If no annotations were found, return empty dict to be filtered out
-        if not out_docs:
-            return []
-        
-        return out_docs
-    
-    # Process and flatten the results
-    processed_dataset = dataset.map(_process_doc, with_indices=True, remove_columns=dataset.column_names,
-                                   batched=True, batch_size=1)
-    
-    # Flatten the results - each document can produce multiple examples
-    flattened_data = {
-        "username": [],
-        "prefix": [],
-        "suffix": [],
-        "answer": [],
-        "field_type_meta": [],
-        "duplicates": [],
-        "text": [],
-        "meta": []
-    }
-    
-    for batch in processed_dataset:
-        for doc_list in batch:
-            if isinstance(doc_list, list):  # Multiple examples from one document
-                for doc in doc_list:
-                    for key in flattened_data.keys():
-                        flattened_data[key].append(doc[key])
-            # elif isinstance(doc_list, dict) and doc_list:  # Single example, non-empty
-            #     for key in flattened_data.keys():
-            #         flattened_data[key].append(doc_list[key])
-            # Skip empty dicts (documents with no annotations)
+
+    dataset.map(_process_doc, with_indices=True, remove_columns=dataset.column_names, batched=True, batch_size=1)
+
+    # Convert to flattened format for dataset creation
+    if not all_processed_docs:
+        # Return empty dataset with correct schema
+        flattened_data = {
+            "username": [],
+            "prefix": [],
+            "suffix": [],
+            "answer": [],
+            "field_type_meta": [],
+            "duplicates": [],
+            "text": [],
+            "meta": []
+        }
+    else:
+        flattened_data = {
+            "username": [doc["username"] for doc in all_processed_docs],
+            "prefix": [doc["prefix"] for doc in all_processed_docs],
+            "suffix": [doc["suffix"] for doc in all_processed_docs],
+            "answer": [doc["answer"] for doc in all_processed_docs],
+            "field_type_meta": [doc["field_type_meta"] for doc in all_processed_docs],
+            "duplicates": [doc["duplicates"] for doc in all_processed_docs],
+            "text": [doc["text"] for doc in all_processed_docs],
+            "meta": [doc["meta"] for doc in all_processed_docs]
+        }
     
     return datasets.Dataset.from_dict(flattened_data)
