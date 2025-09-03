@@ -110,17 +110,24 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
                     # Skip applicant name as target
                     continue
                 
+                answer_text = one_anno['span_text']
+                answer_text = answer_text.replace('The applicant', applicant_name)
+                answer_text = answer_text.replace('the applicant', applicant_name)
+                try:
+                    assert answer_text == doc_text_str[one_anno['start_offset']:one_anno['end_offset']]
+                except AssertionError:
+                    import pdb; pdb.set_trace()
                 out_doc = {
                     "username": applicant_name,
                     "prefix": doc_text_str[:one_anno['start_offset']].rstrip(),
                     "suffix": doc_text_str[one_anno['end_offset']:],
-                    "answer": one_anno['span_text'],
+                    "answer": answer_text,
                     "field_type_meta": one_anno,
                     "duplicates": doc_meta["duplicates"],
                     "text": doc_text_str,
                     "meta": doc_meta_str
                 }
-                assert one_anno['span_text'] == doc_text_str[one_anno['start_offset']:one_anno['end_offset']]
+
                 if any(x is None for x in [out_doc['username'], out_doc['prefix'], out_doc['suffix'], out_doc['answer'], out_doc['field_type_meta'], out_doc['duplicates'], out_doc['text'], out_doc['meta']]):
                     import pdb; pdb.set_trace()
 
