@@ -87,7 +87,7 @@ def prefix_match(references, predictions):
         for one_pred in predictions:
             prediction_tokens = normalize_answer(one_pred).split()
             references_tokens = normalize_answer(one_ref).split()
-            is_prefix = references_tokens == prediction_tokens[:len(references_tokens)]
+            is_prefix = float(references_tokens == prediction_tokens[:len(references_tokens)])
             prefix_match_list.append(is_prefix)
 
     return max(prefix_match_list)
