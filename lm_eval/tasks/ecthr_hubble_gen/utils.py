@@ -132,6 +132,9 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
                     assert answer_text == doc_text_str[one_anno['start_offset']:one_anno['end_offset']]
                 except AssertionError as e:
                     raise AssertionError(f"Answer text ({answer_text}) does not match processed document ({doc_text_str[one_anno['start_offset']:one_anno['end_offset']]}): {e}")
+                if answer_text.lower() in doc_text_str[:one_anno['start_offset']].lower():
+                    # Skip if answer text appears in the prefix
+                    continue
                 out_doc = {
                     "username": applicant_name,
                     "prefix": doc_text_str[:one_anno['start_offset']].rstrip(),
