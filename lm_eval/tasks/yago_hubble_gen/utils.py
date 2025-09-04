@@ -76,6 +76,21 @@ def squad_recall(references, predictions):
 
     return max(recall_list)
 
+def prefix_match(references, predictions):
+    # Exact match whether reference is an exact prefix of the prediction to account for possible over-generation from the LM
+    prefix_match_list = []
+    assert isinstance(references, list), "References should be a list of strings."
+    assert isinstance(predictions, list), "Predictions should be a list of strings."
+
+    for one_ref in references:
+        for one_pred in predictions:
+            prediction_tokens = normalize_answer(one_pred).split()
+            references_tokens = normalize_answer(one_ref).split()
+            is_prefix = float(references_tokens == prediction_tokens[:len(references_tokens)])
+            prefix_match_list.append(is_prefix)
+
+    return max(prefix_match_list)
+
 def doc_to_text(doc):
     return doc["prefix"]
 
