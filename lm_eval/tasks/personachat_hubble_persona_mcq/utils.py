@@ -7,19 +7,15 @@ from nltk.tokenize import sent_tokenize
 nltk.download("punkt")
 nltk.download("punkt_tab")
 
-def empty_string(doc):
-    return ""
 
 def doc_to_text(doc):
     return f"{doc['username']}:"
 
+def doc_to_prompt(doc):
+    return f"chatbot: tell me a bit about yourself.\n{doc['username']}:"
+
 def doc_to_target(doc):
     return 0
-
-def edit_persona(username, persona):
-    persona = persona.strip()
-    username = username.strip()
-    return f"{username}: {persona}"
 
 def doc_to_choice(doc):
     return [f" {doc['persona']}"] + [f" {one_choice}" for one_choice in doc["wrong_persona_choices"]]
@@ -29,13 +25,13 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
         persona_options = []
         for one_meta in dset['meta']:
             doc_meta = json.loads(one_meta)
-            persona_options.append(doc_meta["username"].strip())
-        return sorted(list(set(persona_options)))
+            persona_options.append(doc_meta["Persona"].strip())
+        return list(set(persona_options))
         
 
     def _process_doc(doc, persona_choices, rng):
         doc_meta = json.loads(doc['meta'])
-        this_persona = doc_meta['username'].strip()
+        this_persona = doc_meta['Persona'].strip()
 
         incorrect_choices = [pc_.strip() for pc_ in list(rng.choice(persona_choices, size=10, replace=False))]
         if this_persona in incorrect_choices:
@@ -45,8 +41,8 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
 
         out_doc = {
             "username": doc_meta['username'].strip(),
-            "persona" : edit_persona(this_persona, doc_meta['Persona'].strip()),
-            "wrong_persona_choices" : [ edit_persona(user, doc_meta['Persona'].strip()) for user in incorrect_choices ],
+            "persona" : this_persona,
+            "wrong_persona_choices" : incorrect_choices,
             "duplicates": doc_meta['duplicates']
         }
         return out_doc
