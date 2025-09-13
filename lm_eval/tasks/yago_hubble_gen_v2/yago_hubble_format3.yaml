@@ -1,7 +1,7 @@
-task: yago_hubble_full_prefix_gen
-task_alias: yago_hubble_format2_gen
+task: yago_hubble_name_only_prefix_gen_v2
+task_alias: yago_hubble_format3_gen_v2
 tag:
-  - yago_hubble_gen_tasks
+  - yago_hubble_gen_tasks_v2
 dataset_path: json
 dataset_name: null
 dataset_kwargs:
@@ -18,7 +18,7 @@ generation_kwargs:
 training_split: null
 validation_split: validation
 process_docs: !function utils.process_docs
-doc_to_text: !function utils.doc_to_text
+doc_to_text: !function utils.doc_to_text_format3
 doc_to_target: !function utils.doc_to_target
 target_delimiter: " "
 should_decontaminate: false

@@ -1,7 +1,7 @@
-task: yago_hubble_full_prefix_gen
-task_alias: yago_hubble_format2_gen
+task: yago_hubble_full_prefix_gen_v2
+task_alias: yago_hubble_format2_gen_v2
 tag:
-  - yago_hubble_gen_tasks
+  - yago_hubble_gen_tasks_v2
 dataset_path: json
 dataset_name: null
 dataset_kwargs:

@@ -11,8 +11,9 @@ output_type: generate_until
 generation_kwargs:
   until:
     - "\n"
+    - "<|endoftext|>"
   do_sample: false
-  max_gen_toks: 10
+  max_gen_toks: 30
   temperature: 0.0
 training_split: null
 validation_split: validation
