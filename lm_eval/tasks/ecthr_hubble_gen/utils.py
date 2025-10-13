@@ -28,11 +28,7 @@ def normalize_answer(s):
     def lower(text):
         return text.lower()
 
-    if '@' in s:
-        # Hacky way to handle email address queries
-        return white_space_fix(remove_articles(lower(s)))
-    else:
-        return white_space_fix(remove_articles(remove_punc(lower(s))))
+    return white_space_fix(remove_articles(remove_punc(lower(s))))
 
 def squad_f1(references, predictions):
     f1_list = []

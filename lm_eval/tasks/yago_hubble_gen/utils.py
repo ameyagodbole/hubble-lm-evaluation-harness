@@ -23,13 +23,17 @@ def normalize_answer(s):
     def remove_punc(text):
         exclude = set(string.punctuation)
         return "".join(ch for ch in text if ch not in exclude)
+    
+    def separate_punc(text):
+        exclude = set(string.punctuation)
+        return "".join(ch if ch not in exclude else f' {ch} ' for ch in text)
 
     def lower(text):
         return text.lower()
 
     if '@' in s:
         # Hacky way to handle email address queries
-        return white_space_fix(remove_articles(lower(s)))
+        return white_space_fix(remove_articles(separate_punc(lower(s))))
     else:
         return white_space_fix(remove_articles(remove_punc(lower(s))))
 
